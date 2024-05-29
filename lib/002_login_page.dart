@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'home_page.dart';
 
 final pb = PocketBase('https://newrah.pockethost.io');
@@ -30,21 +29,14 @@ class _LoginPageState extends State<LoginPage> {
               _passwordController.text,
             );
 
-        // Save token and username to SharedPreferences
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user.token);
-        // await prefs.setString('username', user.token);
-        await prefs.setString('username', _usernameController.text);
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
-      } catch (e) {
+            } catch (e) {
         // Optional: Clear the text fields if login fails
         _usernameController.clear();
         _passwordController.clear();
-        // Handle error (e.g., show a message to the user)
       } finally {
         setState(() {
           _isLoading = false;

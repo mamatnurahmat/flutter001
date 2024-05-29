@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pocketbase/pocketbase.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'home_page.dart';
-
-final pb = PocketBase('https://newrah.pockethost.io');
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,39 +12,19 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isLoading = false;
 
-  Future<void> _login() async {
+  void _login() {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      try {
-        final user = await pb.collection('users').authWithPassword(
-              _usernameController.text,
-              _passwordController.text,
-            );
-
-        // Save token and username to SharedPreferences
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user.token);
-        // await prefs.setString('username', user.token);
-        await prefs.setString('username', _usernameController.text);
-
+      // Check hardcoded username and password for demonstration
+      if (_usernameController.text == 'user' && _passwordController.text == 'password') {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
-      } catch (e) {
-        // Optional: Clear the text fields if login fails
-        _usernameController.clear();
-        _passwordController.clear();
-        // Handle error (e.g., show a message to the user)
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid username or password')),
+        );
       }
     }
   }
@@ -86,12 +62,10 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               const SizedBox(height: 20),
-              _isLoading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: _login,
-                      child: const Text('Login'),
-                    ),
+              ElevatedButton(
+                onPressed: _login,
+                child: const Text('Login'),
+              ),
             ],
           ),
         ),
