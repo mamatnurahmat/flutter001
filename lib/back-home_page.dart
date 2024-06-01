@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -12,7 +13,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   String? _username;
-  String? _token;
+
 
   @override
   void initState() {
@@ -24,9 +25,10 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _username = prefs.getString('username');
-      _token = prefs.getString('token');
     });
   }
+
+
 
   void _logout(BuildContext context) {
     showDialog(
@@ -64,19 +66,22 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  List<Widget> _widgetOptions() {
-    return <Widget>[
-      Center(child: Text('Home Page Content ${_username ?? ''} || ${_token ?? ''} ')),
-      const Center(child: Text('Search Page Content')),
-      const Center(child: Text('Profile Page Content')),
-    ];
-  }
+  static const List<Widget> _widgetOptions = <Widget>[
+    Center(child: Text('Home Page Content $_username')),
+//    Center(
+//        child: _username == null
+//            ? const CircularProgressIndicator()
+//            : Text('Welcome, $_username!'),
+//      ),
+    Center(child: Text('Search Page Content')),
+    Center(child: Text('Profile Page Content')),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: const Text('Home PAGE'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -84,7 +89,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: _widgetOptions().elementAt(_selectedIndex),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

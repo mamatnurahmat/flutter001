@@ -33,68 +33,18 @@ class _LoginPageState extends State<LoginPage> {
         // Save token and username to SharedPreferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', user.token);
+        // await prefs.setString('username', user.token);
         await prefs.setString('username', _usernameController.text);
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
-      } on ClientException catch (e) {
-        // Handle error (e.g., show a message to the user)
-        final response = e.response;
-
-        if (response != null && response is Map<String, dynamic>) {
-          final statusCode = response['code'];
-          final statusMessage = response['message'];
-          
-          // Print HTTP status code
-          print('HTTP Status: $statusCode');
-          
-          // Show error message in a popup dialog
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Login Failed'),
-                content: Text(statusMessage ?? 'Unknown error occurred.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          // Handle the case when the response is not as expected
-          print('Login failed: Unexpected error');
-          
-          // Show error message in a popup dialog
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Login Failed'),
-                content: const Text('Unexpected error occurred.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-
+      } catch (e) {
         // Optional: Clear the text fields if login fails
         _usernameController.clear();
         _passwordController.clear();
+        // Handle error (e.g., show a message to the user)
       } finally {
         setState(() {
           _isLoading = false;
